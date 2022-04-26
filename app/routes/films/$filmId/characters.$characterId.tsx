@@ -1,5 +1,5 @@
 import type { LoaderFunction } from '@remix-run/node'
-import { useLoaderData } from '@remix-run/react'
+import { useCatch, useLoaderData } from '@remix-run/react'
 import invariant from 'tiny-invariant'
 import { FilmCharacter, getFilmCharacter } from '~/api/fimls'
 
@@ -25,6 +25,26 @@ export default function Character() {
       </div>
     </div>
   )
+}
+
+export function CatchBoundary() {
+  const caught = useCatch()
+
+  if (caught.status === 404) {
+    return (
+      <div className='mb-3'>
+        <div className='text-3xl mb-2'>Details</div>
+        <div className='p-4 rounded shadow-lg border bg-orange-200 border-orange-600'>
+          <div className='text-gray-700 font-bold text-xl mb-2'>{caught.statusText}</div>
+          <p>
+            {caught.status} {caught.statusText}
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  throw new Error('Unkown error')
 }
 
 export function ErrorBoundary({ error }: any) {
