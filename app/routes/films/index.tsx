@@ -1,12 +1,15 @@
 import type { LinksFunction, LoaderFunction, MetaFunction } from '@remix-run/node'
-import { Form, useLoaderData } from '@remix-run/react'
+import { Form, Link, useLoaderData } from '@remix-run/react'
 import { Film, getFilms } from '~/api/fimls'
 import styles from '../../tailwind.css'
 
 export const loader: LoaderFunction = async ({ request }) => {
   const url = new URL(request.url)
   const title = url.searchParams.get('title')
-  return getFilms(title)
+  if (title) {
+    return getFilms(title)
+  }
+  return getFilms()
 }
 
 export const links: LinksFunction = () => {
@@ -35,10 +38,10 @@ export default function FilmIndex() {
       </Form>
       <div className='grid grid-cols-4 gap-4'>
         {fimls.map((film) => (
-          <div className='hover:shadow-2xl hover:scale-105 hover:font-bold cursor-pointer'>
+          <Link key={film.title} to={film.id} className='hover:shadow-2xl hover:scale-105 hover:font-bold cursor-pointer' prefetch='intent'>
             <div>{film.title}</div>
             <img src={film.image} alt={film.title} />
-          </div>
+          </Link>
         ))}
       </div>
     </div>
